@@ -2,6 +2,42 @@
 
 A single repo collecting all my AI skills.
 
+## Cheatsheet
+
+**Auto** skills kick in on their own when the conversation matches their
+trigger; **manual** ones you invoke by typing `/<name>` (they never fire
+on their own).
+
+### Workflow skills
+
+| Skill | In a nutshell | Invoke |
+|---|---|---|
+| `how` | Explains how a piece of the codebase works — fans out explorer subagents over a subsystem and writes an onboarding-style walkthrough. Also has a critique mode that hunts for architectural problems. | auto — ask "how does X work?" |
+| `why` | Digs up *why* the code is the way it is — searches git history, PRs, tickets, docs, and any connected MCPs, then answers with citations. | auto — ask "why is X like this?" |
+| `blast-radius` | Before a risky change ships: finds what it could break *beyond* the obvious callers, pins down the one fact the change's safety depends on, and proves it by running real code. | manual — `/blast-radius` |
+| `reflect` | End-of-session retrospective: three reviewer subagents mine the conversation for durable lessons, and (with your approval) the lessons get written back into the skills in this repo. | manual — `/reflect` |
+| `unslop` | Strips AI-sounding patterns from any writing and pushes toward a human voice. | auto — on any writing task |
+| `typescript-best-practices` | House rules for TypeScript code. | auto — on any `.ts`/`.tsx` work |
+
+### Principles
+
+Small engineering-values cards. All **auto** — the agent pulls one in
+when the situation matches; you never invoke them yourself (though
+`/principle-<name>` works if you want to point at one).
+
+| Principle | In a nutshell |
+|---|---|
+| `fix-root-causes` | When debugging, trace to the real cause — no nil-check band-aids that silence the crash. |
+| `prove-it-works` | Before saying "done", verify against the real thing: run the feature, read the actual output. "It compiles" doesn't count. |
+| `type-system-discipline` | Make the type checker do the work: illegal states unrepresentable, branded IDs, no lying casts, exhaustive matches. |
+| `boundary-discipline` | Validate data once, at the edges (config, network, CLI). Inside, trust the types and keep logic in pure functions. |
+| `model-the-domain` | Lots of branching or paired booleans? Reach for a structure instead: state machine, discriminated union, lookup table. |
+| `laziness-protocol` | Smallest change that solves the problem. Prefer deleting code. No speculative layers. |
+| `minimize-reader-load` | Optimize for the next reader: collapse one-caller wrappers, shrink mutable scope, cut indirection. |
+| `subtract-before-you-add` | Remove dead weight first, then build on the simpler base. |
+| `encode-lessons-in-structure` | Recurring correction? Turn it into a lint rule / script / check instead of writing the instruction again. |
+| `experience-first` | The product is the experience — fewer polished features over many rough ones; sweat the details. |
+
 ## Layout
 
 ```
