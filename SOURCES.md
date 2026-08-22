@@ -31,7 +31,7 @@ imported 2026-08-22 at commit [`4612556`](https://github.com/cursor/plugins/tree
 ¹ Removed `disable-model-invocation: true` so agents apply the principle
 automatically when its trigger description matches.
 
-Original skills with no upstream: `validate-idea`.
+Original skills with no upstream: `validate-idea`, `codex-computer-use`.
 
 Evaluated and not adopted (in local `.staging/`, gitignored):
 `principle-build-the-lever`, `principle-sequence-verifiable-units`,
