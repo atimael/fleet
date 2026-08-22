@@ -40,3 +40,13 @@ done
 
 mkdir -p "$HOME/.claude"
 link_into "$REPO_DIR/config/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+
+mkdir -p "$HOME/.local/bin"
+for bin_path in "$REPO_DIR"/bin/*; do
+  link_into "$bin_path" "$HOME/.local/bin/$(basename "$bin_path")"
+done
+
+mkdir -p "$HOME/.claude/commands"
+for command_path in "$REPO_DIR"/commands/*.md; do
+  link_into "$command_path" "$HOME/.claude/commands/$(basename "$command_path")"
+done
