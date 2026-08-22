@@ -18,21 +18,25 @@ if [ ${#skills[@]} -eq 0 ]; then
   exit 0
 fi
 
+link_into() {
+  local src="$1" link="$2"
+  if [ -L "$link" ]; then
+    ln -sfn "$src" "$link"
+    echo "updated  $link"
+  elif [ -e "$link" ]; then
+    echo "skipped  $link (exists and is not a symlink — remove it manually to manage it from this repo)"
+  else
+    ln -s "$src" "$link"
+    echo "linked   $link"
+  fi
+}
+
 for target in "${TARGETS[@]}"; do
   mkdir -p "$target"
   for skill_path in "${skills[@]}"; do
-    skill_path="${skill_path%/}"
-    name="$(basename "$skill_path")"
-    link="$target/$name"
-
-    if [ -L "$link" ]; then
-      ln -sfn "$skill_path" "$link"
-      echo "updated  $link"
-    elif [ -e "$link" ]; then
-      echo "skipped  $link (exists and is not a symlink — remove it manually to manage it from this repo)"
-    else
-      ln -s "$skill_path" "$link"
-      echo "linked   $link"
-    fi
+    link_into "${skill_path%/}" "$target/$(basename "$skill_path")"
   done
 done
+
+mkdir -p "$HOME/.claude"
+link_into "$REPO_DIR/config/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
