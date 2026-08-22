@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# T3 Code's slash-command palette only scans user scope (~/.claude/commands),
+# so project-scoped commands never show up in it. Run this from anywhere inside
+# a project to symlink its .claude/commands into user scope, and to prune links
+# left behind by moved or deleted projects.
+
+USER_COMMANDS="$HOME/.claude/commands"
+
+dir="$PWD"
+while [ "$dir" != "/" ] && [ ! -d "$dir/.claude/commands" ]; do
+  dir="$(dirname "$dir")"
+done
+
+PROJECT_COMMANDS="$dir/.claude/commands"
+if [ ! -d "$PROJECT_COMMANDS" ]; then
+  echo "no .claude/commands found in $PWD or any parent" >&2
+  exit 1
+fi
+
+mkdir -p "$USER_COMMANDS"
+shopt -s nullglob
+
+linked=0
+for cmd in "$PROJECT_COMMANDS"/*.md; do
+  # resolve project-level symlinks (e.g. .claude/commands -> .agents/commands)
+  # so the user-scope link survives project-side reshuffling
+  src="$(readlink -f "$cmd")"
+  link="$USER_COMMANDS/$(basename "$cmd")"
+  if [ -e "$link" ] && [ ! -L "$link" ]; then
+    echo "skipped  $(basename "$cmd") (real file in $USER_COMMANDS — remove it manually to manage it from a project)"
+    continue
+  fi
+  ln -sfn "$src" "$link"
+  echo "linked   $(basename "$cmd") -> $src"
+  linked=$((linked + 1))
+done
+
+pruned=0
+for link in "$USER_COMMANDS"/*.md; do
+  if [ -L "$link" ] && [ ! -e "$link" ]; then
+    rm "$link"
+    echo "pruned   $(basename "$link") (target gone)"
+    pruned=$((pruned + 1))
+  fi
+done
+
+echo "$linked linked from $PROJECT_COMMANDS, $pruned pruned."
+echo "T3 Code refreshes its command cache within ~5 minutes; restart it to pick up sooner."
