@@ -33,6 +33,13 @@ automatically when its trigger description matches.
 
 Original skills with no upstream: `validate-idea`, `codex-computer-use`.
 
+Imported 2026-08-30 from a user-provided bundle (no public upstream):
+`planning`, `okf`, and `execute-plan` (renamed from `execute-plan-opencode`).
+**Adapted**: OpenCode worker types replaced with Codex CLI workers
+(gpt-5.6-sol low) under a Fable-low secretary, `planned` status renamed
+`dependent`, `execute-task`/"Ralph" references fixed, commits switched to
+conventional format.
+
 Evaluated and not adopted (in local `.staging/`, gitignored):
 `principle-build-the-lever`, `principle-sequence-verifiable-units`,
 `principle-make-operations-idempotent`, `principle-separate-before-serializing-shared-state`,

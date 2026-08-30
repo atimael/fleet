@@ -16,6 +16,9 @@ on their own).
 | `why` | Digs up *why* the code is the way it is — searches git history, PRs, tickets, docs, and any connected MCPs, then answers with citations. | auto — ask "why is X like this?" |
 | `blast-radius` | Before a risky change ships: finds what it could break *beyond* the obvious callers, pins down the one fact the change's safety depends on, and proves it by running real code. | manual — `/blast-radius` |
 | `reflect` | End-of-session retrospective: three reviewer subagents mine the conversation for durable lessons, and (with your approval) the lessons get written back into the skills in this repo. | manual — `/reflect` |
+| `planning` | Turns a feature into a durable OKF plan: task docs with dependencies (`dependent` status), tests, and acceptance criteria, executable without the planning conversation. Run on Fable high. | auto — ask for an implementation plan |
+| `execute-plan` | The loop side of `planning`: a secretary agent (Fable low) picks up ready tasks in dependency order, hands each to a Codex worker (gpt-5.6-sol low), verifies with real test runs, keeps task logs, and commits per task. | auto — when `.tasks/okf/` artifacts exist |
+| `okf` | The shared artifact format `planning` and `execute-plan` use (plan index, task tracker, task docs, task logs). | loaded by the other two |
 | `codex-computer-use` | Delegates runtime verification to Codex CLI when it needs computer use: launch the app or simulator, walk a flow, capture screenshots, report pass/fail with evidence. | auto — ask to test a flow or verify UI behavior |
 | `validate-idea` | Honest go/no-go research on an app idea: every number traced to its primary source, every competitor checked by hand in the stores, plus a "could not verify" section. | auto — ask "is this idea worth building?" |
 | `unslop` | Strips AI-sounding patterns from any writing and pushes toward a human voice. | auto — on any writing task |
