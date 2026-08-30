@@ -31,7 +31,8 @@ imported 2026-08-22 at commit [`4612556`](https://github.com/cursor/plugins/tree
 ¹ Removed `disable-model-invocation: true` so agents apply the principle
 automatically when its trigger description matches.
 
-Original skills with no upstream: `validate-idea`, `codex-computer-use`.
+Original skills with no upstream: `validate-idea`, `codex-computer-use`,
+`init-project`.
 
 Imported 2026-08-30 from a user-provided bundle (no public upstream):
 `planning`, `okf`, and `execute-plan` (renamed from `execute-plan-opencode`).
