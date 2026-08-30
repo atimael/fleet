@@ -9,7 +9,10 @@ Take an empty (or nearly empty) directory to the state the `planning` / `execute
 
 ## 1. Settle the two inputs
 
-Project name and stack. If the user's request names them ("new iOS app snapvault"), proceed. If the stack is genuinely open, ask once — platform dictates everything downstream, so this is worth blocking on. Do not default to a stack the user didn't pick.
+Project name and stack. Two ways in:
+
+- **Called from a plan's scaffold task**: the stack is already decided in `plan.okf.md`. Use it; don't relitigate.
+- **Invoked directly**: if the user named the stack, use it. Otherwise derive it from what the project is (target platform, distribution, the user's tech preferences) and state the choice with one line of rationale before scaffolding — don't block on a question unless it's a genuine coin flip only the user can call.
 
 ## 2. Scaffold with the stack's canonical generator
 

@@ -15,6 +15,12 @@ Scope note: these artifacts are durable handoff documents for the `execute-plan`
 
 Inspect the repository before writing the plan. Resolve material ambiguity about scope, behavior, constraints, acceptance criteria, and architectural choices with the user. A plan can record a genuine blocker, but it cannot turn an unresolved product decision into an implementation task.
 
+## Greenfield projects
+
+When the repository is empty or has no code yet, the stack is a planning decision, not a user prerequisite. Derive it from the product requirements (target platform, distribution, user's stated tech preferences), record it as a decision with rationale in `plan.okf.md`, and ask the user only when two stacks remain a genuine coin flip the user must own.
+
+Make T-001 a scaffold task: follow the `init-project` skill's checklist with the decided stack, ending in a passing test harness and a project `CLAUDE.md` that records the verified test/build commands. Every other task depends on T-001.
+
 ## Store the plan
 
 Use the repository's existing planning convention when it has one. Otherwise store each plan under the repository's ignored `.tasks` directory:
