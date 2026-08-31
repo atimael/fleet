@@ -11,8 +11,8 @@ Execute a completed planning handoff as a loop: pick up the next ready task, han
 
 | Role | Model | How it runs |
 |---|---|---|
-| Planner | Fable, high reasoning | the `planning` skill, before this one |
-| Secretary | Fable, low reasoning | the main agent running this skill |
+| Planner | `gpt-5.6-sol`, high reasoning | the `planning` skill, before this one |
+| Secretary | `gpt-5.6-luna`, medium reasoning | the main agent running this skill |
 | Implementer | Codex CLI, `gpt-5.6-sol`, low reasoning | `codex exec`, fresh session per task |
 | Fixer | Codex CLI, `gpt-5.6-sol`, low reasoning | `codex exec`, one session per repair round |
 

@@ -1,13 +1,13 @@
 ---
 name: planning
-description: Build a repository-scoped implementation plan with durable OKF artifacts, dependency-aware tasks, tests, and verification. Use for implementation plans, task breakdowns, and execution handoffs. Run on a strong reasoning model (Fable, high reasoning).
+description: Build a repository-scoped implementation plan with durable OKF artifacts, dependency-aware tasks, tests, and verification. Use for implementation plans, task breakdowns, and execution handoffs. Run on gpt-5.6-sol with high reasoning.
 ---
 
 # Planning
 
 Create a plan that another agent can execute without recovering requirements from the planning conversation. This skill produces planning artifacts only. Use `execute-plan` to implement them.
 
-Run this skill on a strong reasoning model (Fable, high reasoning). Planning quality gates everything downstream: the executor's workers are low-reasoning Codex sessions that do exactly what the task documents say, so every judgment call must be settled here.
+Run this skill on `gpt-5.6-sol` with high reasoning. Planning quality gates everything downstream: the executor's workers are low-reasoning Codex sessions that do exactly what the task documents say, so every judgment call must be settled here.
 
 Scope note: these artifacts are durable handoff documents for the `execute-plan` loop, not conversational plans. The global preference for extremely concise plans applies to interactive plan-mode replies; OKF artifacts are deliberately explicit.
 
