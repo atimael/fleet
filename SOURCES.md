@@ -41,6 +41,18 @@ Imported 2026-08-30 from a user-provided bundle (no public upstream):
 `dependent`, `execute-task`/"Ralph" references fixed, commits switched to
 conventional format.
 
+Revised 2026-09-02 after comparing against
+[gsd-core](https://github.com/open-gsd/gsd-core),
+[OpenSpec](https://github.com/Fission-AI/openspec),
+[wayfinder](https://github.com/mattpocock/skills/blob/main/skills/engineering/wayfinder/SKILL.md),
+and Anthropic's [AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook).
+Took: ceremony gate, partial plans with `Not yet specified` / `Out of scope`,
+WHEN/THEN acceptance rows, `unverified` instead of silent passes,
+`Follow-ups` ledger with a worker deviation rule, resume path, blocking/nit
+review severity. Cut: `blocks`, Mermaid graph, execution-order list, owner,
+priority, per-task change logs, and the nine-section task log. Not adopted:
+OpenSpec delta specs and CLI, GSD parallel waves, wayfinder's tracker storage.
+
 Evaluated and not adopted (in local `.staging/`, gitignored):
 `principle-build-the-lever`, `principle-sequence-verifiable-units`,
 `principle-make-operations-idempotent`, `principle-separate-before-serializing-shared-state`,
