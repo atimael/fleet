@@ -1,28 +1,30 @@
 # OKF implementation planning
 
-> **Use when:** creating an implementation plan, task DAG, execution order, or
+> **Use when:** creating an implementation plan, task DAG, or
 > one-document-per-task work breakdown. **Do not use when:** documenting the
 > current project or architecture without planning work.
 >
-> **Start with:** Artifact layout, Plan index, Task document, then Dependency and
-> status rules. **Search terms:** `depends_on`, `blocks`, task register, Mermaid,
-> acceptance criteria, validation.
+> **Start with:** Artifact layout, Source of truth, then the templates.
+> **Search terms:** `depends_on`, task tracker, scenario, acceptance,
+> follow-ups, not yet specified.
 
 This reference produces an execution plan, not implementation.
 
 ## Ground rules
 
 - Base scope, dependencies, and acceptance criteria on repository evidence; cite
-  repository-relative paths and symbols. Resolve material unknowns before
-  compiling the execution plan.
+  repository-relative paths and symbols.
 - Use YAML front matter for machine-readable metadata and Markdown for the body.
 - Use stable task IDs in the form `T-<nnn>`.
-- Do not invent owners, dates, repository behavior, or completion status. Use
-  `unassigned` or `TBD` where needed. Do not use `proposed` as a task status:
-  clarify material requirements before creating execution tasks, and list only
-  work approved for execution.
+- Do not invent dates, repository behavior, or completion status. Use `TBD`
+  where needed.
 - Make every prerequisite an explicit task ID; do not conceal dependencies in prose.
-- Keep status, dependency metadata, and completion evidence consistent as work evolves.
+- A plan may be partial. Only `ready` tasks must be fully specified. Work you
+  cannot yet state precisely goes under `Not yet specified` in the plan index,
+  not into a vague task.
+- Decisions get resolved during planning and recorded in the plan index. A
+  worker task never has "decide X" as its deliverable. A prototype task is fine
+  when it has an observable outcome (a spike that proves an API shape works).
 
 ## Boundedness gate
 
@@ -34,19 +36,13 @@ end-to-end validation. Create a prerequisite design or prototype task when the
 implementation still requires choosing authority, state ownership, promotion
 ordering, recovery behavior, or compatibility policy.
 
-A durability or concurrency task must name:
-
-- The authoritative, candidate, completed, and published states that apply.
-- Every freshness, generation, schema, or revision value and which operation owns its mutation.
-- Material interruption points and concurrent interleavings.
-- The deterministic test or procedure that exercises each boundary.
-
-A bounded task may keep two or more tightly coupled risks among concurrent
-writers, process interruption, atomic filesystem/database coordination,
-migration, a durable state machine, recovery, or an unstable external
-dependency only when they cannot be delivered and reviewed independently.
-Split otherwise, and flag the surviving task as high-complexity in its Context
-section so the executor briefs its worker accordingly.
+A durability or concurrency task must name the authoritative, candidate,
+completed, and published states that apply; every freshness, generation, or
+revision value and which operation owns its mutation; material interruption
+points and concurrent interleavings; and the deterministic test for each
+boundary. Such a task keeps two or more coupled risks only when they cannot be
+delivered and reviewed independently, and flags itself as high-complexity in
+its Context section so the executor briefs its worker accordingly.
 
 ## Artifact layout
 
@@ -64,9 +60,16 @@ Follow a repository-provided location and template when present. Otherwise use:
 ```
 
 The planning stage writes a plan index, a task tracker, and one document for
-every task. The execution stage creates one task log when each task starts. The
-task tracker is the central durable status record; the plan index must not be
-the only place that specifies a task.
+every task. The execution stage creates one task log when each task starts.
+
+## Source of truth
+
+Task front matter is the truth for a task's status and dependencies.
+`tasks.okf.md` is a derived index: its rows restate front matter so a reader can
+see the whole initiative at a glance. When they disagree, front matter wins and
+the tracker row gets corrected. Nothing else restates status: no dependency
+diagram, no execution-order list, no per-task change log. Order is the tracker
+row order plus `depends_on`.
 
 ## Plan index template
 
@@ -91,26 +94,30 @@ sources:
 - In: <...>
 - Out: <...>
 
+## Decisions
+- <decision>. Why: <one line>.
+
 ## Constraints
 - <constraint and its evidence>
-
-## Dependency graph
-```mermaid
-graph TD
-  T001[Foundation] --> T002[Implementation]
-  T002 --> T003[Validation]
-```
-
-## Execution order
-1. T-001 — <why it is ready>
-2. T-002 — after T-001
 
 ## Cross-task acceptance criteria
 - <end-to-end criterion>
 
-## Risks and decisions
-| ID | Type | Statement | Affected tasks | Mitigation/decision needed |
-| --- | --- | --- | --- | --- |
+## Not yet specified
+<In-scope work that hangs on open questions or on tasks not yet executed.
+Written as loosely as the view allows. Graduates into tasks on re-planning.
+Leave empty when the way is fully clear.>
+
+## Out of scope
+- <work consciously ruled outside this initiative, and why>
+
+## Risks
+| ID | Statement | Affected tasks | Mitigation |
+| --- | --- | --- | --- |
+
+## Follow-ups
+<Discoveries during execution that fall outside any task's scope. Execution
+appends here instead of expanding a task. Empty at planning time.>
 
 ## Change log
 | Date | Change |
@@ -129,9 +136,9 @@ last_verified: YYYY-MM-DD
 
 # <Initiative> tasks
 
-| ID | Task | Status | Depends on | Blocks | Document | Log |
-| --- | --- | --- | --- | --- | --- | --- |
-| T-001 | <title> | ready | — | T-002 | [T-001](tasks/T-001-<slug>.okf.md) | pending |
+| ID | Task | Status | Depends on | Document | Log |
+| --- | --- | --- | --- | --- | --- |
+| T-001 | <title> | ready | none | [T-001](tasks/T-001-<slug>.okf.md) | pending |
 
 ## Status rules
 - `dependent`: approved work waiting on incomplete dependencies.
@@ -140,13 +147,12 @@ last_verified: YYYY-MM-DD
 - `blocked`: work with a specific blocker and next step.
 - `completed`: work with recorded validation evidence.
 - `cancelled`: approved work that will not be executed.
-
-## Change log
-| Date | Change |
-| --- | --- |
 ```
 
 ## Task document template
+
+Omit the failure and concurrency matrix unless the task is stateful,
+concurrent, recovery, or migration work. Every other section is required.
 
 ```md
 ---
@@ -155,10 +161,7 @@ kind: task
 id: T-001
 title: <short imperative title>
 status: dependent | ready | in_progress | blocked | completed | cancelled
-priority: critical | high | medium | low
-owner: unassigned
 depends_on: []
-blocks: []
 last_verified: YYYY-MM-DD
 sources:
   - path: <repo-relative path>
@@ -172,23 +175,25 @@ sources:
 
 ## Context
 <Relevant architecture, decisions, and repository evidence. Name exact files,
-symbols, interfaces, and conventions the worker should inspect.>
+symbols, interfaces, and conventions the worker should inspect, and any
+contract this task changes.>
 
 ## Scope
 - In: <specific files, components, or behavior>
 - Out: <explicit exclusions>
 
-## Dependencies
-- None. This task has no prerequisites.
-
 ## Implementation steps
 1. <Concrete, verifiable step.>
 2. <Concrete, verifiable step.>
 
-## Test plan
-| Test | Level | Behavior proved | Location |
-| --- | --- | --- | --- |
-| <test to add or update> | unit, integration, end-to-end, or manual | <success, boundary, or failure behavior> | <path or procedure> |
+## Acceptance
+| ID | Scenario | Test | Command | Expected |
+| --- | --- | --- | --- | --- |
+| A1 | WHEN <condition> THEN <observable outcome> | `<test file::name>` to add or update | `<exact command>` | <passing output> |
+| A2 | WHEN <condition> THEN <observable outcome> | manual: <repeatable procedure> | none | <what the person or verifier sees> |
+
+<Every material success, boundary, and failure case gets a row. A row whose
+test is `manual` records why automation is unavailable.>
 
 ## Edge cases and constraints
 - <Behavior at a boundary or failure condition.>
@@ -200,39 +205,24 @@ symbols, interfaces, and conventions the worker should inspect.>
 ## Failure and concurrency matrix
 | Boundary or interleaving | Authoritative state | Candidate/completed/published state | Expected recovery or rejection | Validation |
 | --- | --- | --- | --- | --- |
-| <point> | <state> | <state> | <behavior> | `<test or procedure>` |
-
-## Interfaces and affected areas
-| Area | Change/contract | Evidence |
-| --- | --- | --- |
-
-## Acceptance criteria
-- [ ] <Observable result>
-- [ ] <Test, command, or manual check>
-
-## Validation
-| Check | Command or procedure | Expected result |
-| --- | --- | --- |
-| <check> | `<command>` | <result> |
 
 ## Risks and decisions
-| ID | Type | Statement | Resolution |
+| ID | Statement | Resolution |
 | --- | --- | --- |
 
 ## Completion record
 - Completed: TBD
 - Evidence: TBD
+- Unverified: TBD
+- Deviations from plan: TBD
 - Follow-ups: TBD
-
-## Change log
-| Date | Change |
-| --- | --- |
 ```
 
 ## Task log template
 
 `execute-plan` creates the log when execution starts. The log is the durable
-handoff record for the plan executor, worker, and reviewer.
+record of what happened to the task, and the resume point if execution is
+interrupted.
 
 ```md
 ---
@@ -247,75 +237,54 @@ last_verified: YYYY-MM-DD
 
 # T-001 execution log
 
-## Current summary
+## Summary
 - State: <current state>
-- Active agent: <worker, reviewer, or none>
-- Next action: <one concrete action>
+- Next action: <one concrete action, precise enough to resume from>
+- Open blocker: none
 
-## Working-tree baseline
-- Pre-existing changes: <paths and relevance, or none>
-
-## Decisions
-| ID | Iteration | Decision | Reason | Source |
-| --- | --- | --- | --- | --- |
-
-## Issues
-| ID | Iteration | Status | Issue | Next step |
-| --- | --- | --- | --- | --- |
-
-## Worker progress
-| Iteration | Files changed | Work completed | Remaining work |
+## Evidence
+| Iteration | Check | Command or procedure | Result |
 | --- | --- | --- | --- |
 
-## Test and verification evidence
-| Iteration | Check | Command or procedure | Result | Evidence |
-| --- | --- | --- | --- | --- |
-
-## Reviewer findings
-| ID | Iteration found | Status | Finding | Evidence | Resolution |
+## Findings
+| ID | Iteration | Severity | Status | Finding | Resolution |
 | --- | --- | --- | --- | --- | --- |
 
-## Event log
+## Events
 | Time | Iteration | Agent | Event |
 | --- | --- | --- | --- |
-
-## Final result
-- Status: pending
-- Summary: TBD
-- Open findings: TBD
-- Tests: TBD
-- Verification: TBD
 ```
+
+Severity is `blocking` (breaks behavior, violates the invariant, or misses an
+acceptance row) or `nit` (style, naming, minor structure). Only blocking
+findings earn a repair round; nits go to the plan's Follow-ups. Finding status
+is `open`, `resolved`, or `accepted` with evidence; findings are never erased.
+Worker decisions and handoffs are events.
 
 ## Dependency and status rules
 
-- `depends_on` lists all prerequisite task IDs; `blocks` is reciprocal.
+- `depends_on` lists all prerequisite task IDs.
 - A task is `ready` only when every dependency is `completed`, except for a
   documented, approved exception.
-- Keep task front matter, `tasks.okf.md`, Mermaid graph, and execution order in
-  agreement. `tasks.okf.md` is the central durable status tracker.
 - Set a tracker row's `Log` value to `pending` during planning. When execution
   creates the task log, replace `pending` with its repository-relative link.
-- Use `blocked` only with a specific blocker and a resolution owner or next step.
-- Mark a task `completed` only after acceptance criteria and validation evidence
-  are recorded.
-- Give every task a test plan that names tests to add or update and the behavior
-  each test proves. Use a repeatable manual test only when automation is not
-  available, and record the reason.
-- Keep the test plan separate from verification. The test plan defines coverage;
-  verification records the commands or procedures that prove the completed work.
+- Use `blocked` only with a specific blocker and next step.
+- Mark a task `completed` only after every acceptance row has recorded
+  evidence or is listed as unverified in the completion record.
 - Prefer thin vertical slices. Split tasks with independent invariants,
-  deliverables, risks, reviewers, or validation; do not split merely to
-  increase task count.
-- Make each task executable by a lower-cost worker without recovering context
-  from the planning conversation. Include exact code landmarks, decided
-  behavior, ordered steps, edge cases, and validation results. Split work that
-  still requires broad discovery or unresolved architectural judgment.
+  deliverables, risks, or validation; do not split merely to increase task
+  count.
+- Make each ready task executable by a lower-cost worker without recovering
+  context from the planning conversation: exact code landmarks, decided
+  behavior, ordered steps, edge cases, and acceptance rows with commands.
+  Work that still needs broad discovery or unresolved judgment is not ready;
+  it belongs under `Not yet specified` until it is.
 
 ## Before handoff
 
-Check that every tracked task has exactly one document, dependency IDs resolve
-without unapproved cycles, links are valid and repository-relative, and each task
-has scope, acceptance criteria, a test plan, verification, risks, and a completion
-record. Reject a ready task that spans multiple independent invariants or leaves
-a durability or concurrency state model implicit.
+Check that every tracked task has exactly one document, every `depends_on` ID
+resolves without cycles, tracker rows match task front matter, links are valid
+and repository-relative, and each ready task has scope, ordered steps, an
+acceptance table with commands, a governing invariant, and a completion record.
+Reject a ready task that spans multiple independent invariants or leaves a
+durability or concurrency state model implicit.

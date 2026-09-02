@@ -12,7 +12,7 @@ Take an empty (or nearly empty) directory to the state the `planning` / `execute
 Project name and stack. Two ways in:
 
 - **Called from a plan's scaffold task**: the stack is already decided in `plan.okf.md`. Use it; don't relitigate.
-- **Invoked directly**: if the user named the stack, use it. Otherwise derive it from what the project is (target platform, distribution, the user's tech preferences) and state the choice with one line of rationale before scaffolding — don't block on a question unless it's a genuine coin flip only the user can call.
+- **Invoked directly**: if the user named the stack, use it. Otherwise derive it from what the project is (target platform, distribution, the user's tech preferences) and state the choice with one line of rationale before scaffolding. Don't block on a question unless it's a genuine coin flip only the user can call.
 
 ## 2. Scaffold with the stack's canonical generator
 
@@ -34,7 +34,7 @@ Check the generator exists before using it; report what's missing instead of imp
 
 `CLAUDE.md` at the repo root (agents on other harnesses read it too via the universal conventions). Keep it short:
 
-- Exact commands: test, build, typecheck/lint — the ones you just ran, verbatim. `execute-plan` finds its baseline command here.
+- Exact commands: test, build, typecheck/lint, the ones you just ran, verbatim, each with what passing looks like ("all green", "Build succeeded"). `execute-plan` finds its baseline command here.
 - Stack and target (e.g. "SwiftUI, macOS 15+").
 - Anything non-obvious the generator produced.
 
